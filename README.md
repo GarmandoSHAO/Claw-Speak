@@ -1,33 +1,33 @@
 # claw-speak v3
 
-**OpenClaw Skill** —— AI 回复后自动用微软 Edge-TTS 读出声音来。
+**OpenClaw Skill** — Auto-speak AI replies aloud via Microsoft Edge-TTS.
 
 ---
 
-## 安装
+## Installation
 
-### 第一步：安装 Skill
+### Step 1: Install the Skill
 
 ```powershell
-# 安装到当前工作区（默认）
+# Install to current workspace (default)
 openclaw skills install git:GarmandoSHAO/Claw-Speak
 
-# 或安装到全局（所有 agent 可用）
+# Or install globally (available to all agents)
 openclaw skills install git:GarmandoSHAO/Claw-Speak --global
 ```
 
-### 第二步：安装 Python 依赖
+### Step 2: Install Python Dependencies
 
 ```powershell
 pip install edge-tts soundfile numpy
 ```
 
-### 第三步：修改配置
+### Step 3: Configure
 
-安装后找到 `config.json`：
+Locate `config.json` after installation:
 
-- 工作区安装：`~/.openclaw/workspace/skills/claw-speak/config.json`
-- 全局安装：OpenClaw 的全局 skill 目录下
+- Workspace install: `~/.openclaw/workspace/skills/claw-speak/config.json`
+- Global install: under OpenClaw's global skills directory
 
 ```json
 {
@@ -42,89 +42,90 @@ pip install edge-tts soundfile numpy
 }
 ```
 
-`agentSessionDirs` 列出你想监听哪些 agent 的回复。
+`agentSessionDirs` — list the agents you want to monitor.
 
-查看你的 agent 有哪些：
+List your agents:
 ```powershell
 dir ~/.openclaw/agents/*/sessions/
 ```
 
-### 第四步：配置 Agent
+### Step 4: Configure Your Agent
 
-在你的 Agent 的 `SOUL.md` 中添加以下指令：
+Add this to your agent's `SOUL.md`:
 
 ```
-**自动朗读监听**：每次回复前，检查 TTS 监听器是否运行。
-检查方法：Get-CimInstance 查询 node.exe 进程命令行中是否包含 tts_watcher。
-如未运行，用 Start-Process -WindowStyle Hidden 启动 tts_watcher.js。
+**Auto TTS Listener**: Before each reply, check if the TTS watcher is running.
+Check method: Get-CimInstance to query node.exe process for "tts_watcher" in command line.
+If not running, start with: Start-Process -WindowStyle Hidden tts_watcher.js
 ```
 
-### 第五步：验证
+### Step 5: Verify
 
-给你的 agent 发一条消息。回复后几秒内应听到扬声器出声。
+Send a message to your agent. You should hear the reply spoken aloud within a few seconds.
 
 ---
 
-## 特性
+## Features
 
-| 特性 | 说明 |
-|------|------|
-| **抢占式中断** | 快速连发消息时，自动中断上一条朗读，直接读最新的 |
-| **多 Agent** | 一个监听器同时监听多个 agent |
-| **纯内存处理** | 音频全程在内存中转换，不写磁盘 |
-| **直连微软 TTS** | 不需要梯子 |
-| **零窗口干扰** | 纯命令行后台运行，不弹窗口 |
+| Feature | Description |
+|---------|-------------|
+| **Preemptive Interrupt** | New message stops current TTS mid-play and starts reading the latest |
+| **Multi-Agent** | Single watcher monitors multiple agents at once |
+| **In-Memory Audio** | Audio processed entirely in RAM — no disk writes |
+| **Direct Microsoft TTS** | No proxy needed |
+| **Zero UI** | Pure command-line background process, no windows |
 
 ---
 
-## 查看可用语音
+## Available Voices
 
 ```powershell
 python edge_speak.py --list-voices
 ```
 
-常用中文语音：
+Common Chinese voices:
 
-| 语音 | 风格 |
-|------|------|
-| `zh-CN-XiaoyiNeural` | 活泼轻快 **推荐** |
-| `zh-CN-XiaoxiaoNeural` | 温暖标准 |
-| `zh-CN-YunxiNeural` | 阳光男声 |
-| `zh-CN-XiaochenNeural` | 冷静知性 |
-| `zh-CN-liaoning-XiaobeiNeural` | 幽默东北话 |
-| `zh-CN-shaanxi-XiaoniNeural` | 明亮陕西话 |
+| Voice | Style |
+|-------|-------|
+| `zh-CN-XiaoyiNeural` | Cheerful **Recommended** |
+| `zh-CN-XiaoxiaoNeural` | Warm standard |
+| `zh-CN-YunxiNeural` | Sunny male |
+| `zh-CN-XiaochenNeural` | Calm intellectual |
+| `zh-CN-liaoning-XiaobeiNeural` | Humorous (Northeastern dialect) |
+| `zh-CN-shaanxi-XiaoniNeural` | Bright (Shaanxi dialect) |
 
 ---
 
-## 相关命令
+## Useful Commands
 
-**查看监听器运行状态：**
+**Check if the watcher is running:**
 ```powershell
 Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.CommandLine -like "*tts_watcher*" } | Select-Object ProcessId,CommandLine
 ```
 
-**手动启动：**
+**Start manually:**
 ```powershell
-cd <claw-speak 安装目录>
+cd <claw-speak install directory>
 node tts_watcher.js
 ```
 
-**手动停止：**
+**Stop manually:**
 ```powershell
 Stop-Process -Id <PID> -Force
 ```
 
 ---
 
-## 目录结构
+## Directory Structure
 
 ```
 claw-speak/
-├── SKILL.md            ← 技能定义
-├── README.md           ← 本文件
-├── install.ps1         ← 安装脚本
-├── config.json         ← 配置
-├── config.example.json ← 配置模板
-├── tts_watcher.js      ← 轮询监听器
-└── edge_speak.py       ← Edge-TTS 封装
+├── SKILL.md            ← Skill definition
+├── README.md           ← This file (English)
+├── README_zh.md        ← 中文说明
+├── install.ps1         ← Install script
+├── config.json         ← Configuration
+├── config.example.json ← Config template
+├── tts_watcher.js      ← Polling watcher
+└── edge_speak.py       ← Edge-TTS wrapper
 ```
