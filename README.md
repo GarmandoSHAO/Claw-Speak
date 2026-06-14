@@ -54,6 +54,23 @@ pip install edge-tts soundfile numpy
 dir ~/.openclaw/agents/*/sessions/
 ```
 
+### 查看可用语音
+
+```powershell
+python edge_speak.py --list-voices
+```
+
+常用中文语音：
+
+| 语音 | 风格 |
+|------|------|
+| `zh-CN-XiaoyiNeural` | 活泼轻快 **推荐** |
+| `zh-CN-XiaoxiaoNeural` | 温暖标准 |
+| `zh-CN-YunxiNeural` | 阳光男声 |
+| `zh-CN-XiaochenNeural` | 冷静知性 |
+| `zh-CN-liaoning-XiaobeiNeural` | 幽默东北话 |
+| `zh-CN-shaanxi-XiaoniNeural` | 明亮陕西话 |
+
 ### 第五步：配置 Agent
 
 在你的 Agent 的 `SOUL.md` 中添加以下指令：
