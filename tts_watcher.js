@@ -42,6 +42,12 @@ function loadConfig() {
   } catch {
     // config.json 不存在就使用默认值
   }
+
+  // 展开 ~ 为用户主目录
+  const home = homedir();
+  CONFIG.agentSessionDirs = CONFIG.agentSessionDirs.map(d =>
+    d.startsWith("~") ? join(home, d.slice(1)) : d
+  );
 }
 
 loadConfig();
