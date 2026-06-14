@@ -1,10 +1,10 @@
 {
   "python": "python3",
   "voice": "zh-CN-XiaoyiNeural",
-  "pollIntervalMs": 6000,
+  "pollIntervalMs": 3000,
   "agentSessionDirs": [
     "~/.openclaw/agents/main/sessions"
   ],
-  "proxy": "http://127.0.0.1:7890",
+  "proxy": "",
   "verbose": true
 }
