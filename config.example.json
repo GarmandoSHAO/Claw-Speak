@@ -1,7 +1,7 @@
 {
   "python": "python3",
   "voice": "zh-CN-XiaoyiNeural",
-  "pollIntervalMs": 3000,
+  "pollIntervalMs": 1000,
   "agentSessionDirs": [
     "~/.openclaw/agents/main/sessions"
   ],
