@@ -7,6 +7,5 @@
     "~/.openclaw/agents/main/sessions",
     "~/.openclaw/agents/shiori/sessions"
   ],
-  "proxy": "http://127.0.0.1:7890",
   "verbose": true
 }
