@@ -58,7 +58,7 @@ pip install edge-tts soundfile numpy
   "voice": "zh-CN-XiaoyiNeural",
   "pollIntervalMs": 6000,
   "agentSessionDirs": [
-    "~/.openclaw/agents/writer/sessions"
+    "~/.openclaw/agents/main/sessions"
   ],
   "proxy": "http://127.0.0.1:7890",
   "verbose": true
@@ -69,7 +69,7 @@ pip install edge-tts soundfile numpy
 
 | 字段 | 说明 | 默认值 |
 |------|------|--------|
-| `agentSessionDirs` | **必填** — 监听的 agent session 目录列表 | writer |
+| `agentSessionDirs` | **必填** — 监听的 agent session 目录列表 | main |
 | `voice` | TTS 语音类型 | `zh-CN-XiaoyiNeural` |
 | `pollIntervalMs` | 轮询间隔（毫秒） | `6000` |
 | `python` | Python 可执行路径 | `python3` |
