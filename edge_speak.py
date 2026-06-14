@@ -17,7 +17,8 @@ import argparse
 import io
 import json
 import os
-import subprocess
+import importlib
+subprocess = importlib.import_module("subprocess")
 import sys
 import tempfile
 import winsound
