@@ -5,6 +5,5 @@
   "agentSessionDirs": [
     "~/.openclaw/agents/main/sessions"
   ],
-  "proxy": "",
   "verbose": true
 }
