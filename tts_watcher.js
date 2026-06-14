@@ -137,6 +137,13 @@ function stripMarkdown(text) {
     .replace(/```[\s\S]*?```/g, (m) => m.replace(/```/g, "").trim())
     // 行内代码：去掉反引号，保留内容
     .replace(/`([^`]+)`/g, "$1")
+    // 加粗、斜体标记
+    .replace(/\*\*/g, "")
+    .replace(/\*/g, "")
+    // 标题标记
+    .replace(/^#+\s*/gm, "")
+    // 分隔线
+    .replace(/^-{3,}/gm, "")
     // 链接：保留显示文字，去掉 URL
     .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
     // 合并多余空行
