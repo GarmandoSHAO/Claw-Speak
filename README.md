@@ -48,27 +48,9 @@ OpenClaw Agent 回复
 pip install edge-tts soundfile numpy
 ```
 
-### 启动
+### 配置
 
-```powershell
-# 从当前目录启动
-node tts_watcher.js
-
-# 或使用包装启动（同时启动 OpenClaw Chat）
-.\openclaw-chat.bat
-```
-
-启动后，监听器会在后台自动工作。当 AI 回复时，你会听到语音朗读。
-
-### 停止
-
-按 `Ctrl+C` 停止监听。
-
----
-
-## 配置文件
-
-复制 `config.example.json` 为 `config.json`，按需修改：
+安装完成后，修改 `config.json` 文件来配置您的 Agent：
 
 ```json
 {
@@ -76,25 +58,27 @@ node tts_watcher.js
   "voice": "zh-CN-XiaoyiNeural",
   "pollIntervalMs": 6000,
   "agentSessionDirs": [
-    "~/.openclaw/agents/writer/sessions"
+    "~/.openclaw/agents/main/sessions"
   ],
   "proxy": "http://127.0.0.1:7890",
   "verbose": true
 }
 ```
 
+**关键配置说明：**
+
 | 字段 | 说明 | 默认值 |
 |------|------|--------|
-| `python` | Python 可执行路径 | `python3` |
-| `voice` | TTS 语音 | `zh-CN-XiaoyiNeural` |
+| `agentSessionDirs` | **必填** — 监听的 agent session 目录列表 | main |
+| `voice` | TTS 语音类型 | `zh-CN-XiaoyiNeural` |
 | `pollIntervalMs` | 轮询间隔（毫秒） | `6000` |
-| `agentSessionDirs` | 监听的 agent session 目录列表 | writer |
-| `proxy` | HTTP 代理（空 = 不走代理） | Clash 默认 |
-| `verbose` | 是否输出日志 | `true` |
+| `python` | Python 可执行路径 | `python3` |
+| `proxy` | HTTP 代理（留空 = 不走代理） | Clash 默认 |
+| `verbose` | 是否输出详细日志 | `true` |
 
-### 支持多 Agent
+**多 Agent 配置示例：**
 
-如果你的 OpenClaw 有多个 agent（如 main、shiori、writer），在 `agentSessionDirs` 中列出所有目录：
+如果您的 OpenClaw 有多个 agent（如 main、shiori、writer），在 `agentSessionDirs` 中列出所有目录：
 
 ```json
 {
@@ -105,6 +89,19 @@ node tts_watcher.js
   ]
 }
 ```
+
+### 启动
+
+```powershell
+# 启动监听器
+node tts_watcher.js
+```
+
+启动后，监听器会在后台自动工作。当 AI 回复时，你会听到语音朗读。
+
+### 停止
+
+按 `Ctrl+C` 停止监听。
 
 ---
 
@@ -144,8 +141,6 @@ claw-speak/
 ├── config.json          ← 实际配置（自动生成）
 ├── tts_watcher.js       ← 轮询监听器（核心）
 ├── edge_speak.py        ← Edge-TTS 引擎封装（核心）
-├── openclaw-chat.ps1    ← 包装启动脚本
-├── openclaw-chat.bat    ← 包装批处理
 ├── assets/              ← 资源/测试音频
 └── output/              ← 临时音频输出
 ```
