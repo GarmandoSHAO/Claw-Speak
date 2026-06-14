@@ -94,6 +94,17 @@ Common Chinese voices:
 | `zh-CN-liaoning-XiaobeiNeural` | Humorous (Northeastern dialect) |
 | `zh-CN-shaanxi-XiaoniNeural` | Bright (Shaanxi dialect) |
 
+Common English voices:
+
+| Voice | Style |
+|-------|-------|
+| `en-US-AriaNeural` | Friendly female **Recommended** |
+| `en-US-JennyNeural` | Warm female |
+| `en-US-GuyNeural` | Calm male |
+| `en-US-TonyNeural` | Deep male |
+| `en-GB-SoniaNeural` | British female |
+| `en-GB-RyanNeural` | British male |
+
 ---
 
 ## Useful Commands

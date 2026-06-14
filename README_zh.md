@@ -94,6 +94,17 @@ python edge_speak.py --list-voices
 | `zh-CN-liaoning-XiaobeiNeural` | 幽默东北话 |
 | `zh-CN-shaanxi-XiaoniNeural` | 明亮陕西话 |
 
+常用英文语音：
+
+| 语音 | 风格 |
+|------|------|
+| `en-US-AriaNeural` | 友好女声 **推荐** |
+| `en-US-JennyNeural` | 温暖女声 |
+| `en-US-GuyNeural` | 平静男声 |
+| `en-US-TonyNeural` | 深沉男声 |
+| `en-GB-SoniaNeural` | 英式女声 |
+| `en-GB-RyanNeural` | 英式男声 |
+
 ---
 
 ## 相关命令
