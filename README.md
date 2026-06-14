@@ -4,38 +4,19 @@
 
 ---
 
-## 部署步骤
+## 安装
 
-### 第一步：获取文件
-
-```powershell
-git clone https://github.com/GarmandoSHAO/Claw-Speak.git ~/.openclaw/tools/claw-speak/
-```
-
-### 第二步：安装（二选一）
-
-**快捷方式 —— 运行安装脚本：**
-```powershell
-cd ~/.openclaw/tools/claw-speak
-.\install.ps1
-```
-安装脚本会自动完成以下操作：检查 Python 环境 → 安装依赖包 → 创建配置文件 → 验证 TTS 引擎能否正常工作（会直接读一句 "安装成功" 验证）。
-
-**手动安装：**
-
-检查依赖：
-
-| 依赖 | 最低版本 | 用途 |
-|------|---------|------|
-| **Node.js** | v18+ | 运行 tts_watcher 监听器 |
-| **Python** | 3.10+ | 运行语音合成 |
+### 第一步：安装 Skill
 
 ```powershell
-node --version
-python --version
+# 安装到当前工作区（默认）
+openclaw skills install git:GarmandoSHAO/Claw-Speak
+
+# 或安装到全局（所有 agent 可用）
+openclaw skills install git:GarmandoSHAO/Claw-Speak --global
 ```
 
-安装 Python 包：
+### 第二步：安装 Python 依赖
 
 ```powershell
 pip install edge-tts soundfile numpy
@@ -43,7 +24,10 @@ pip install edge-tts soundfile numpy
 
 ### 第三步：修改配置
 
-打开 `config.json`，填写实际信息。
+安装后找到 `config.json`：
+
+- 工作区安装：`~/.openclaw/workspace/skills/claw-speak/config.json`
+- 全局安装：OpenClaw 的全局 skill 目录下
 
 ```json
 {
@@ -58,28 +42,12 @@ pip install edge-tts soundfile numpy
 }
 ```
 
-`agentSessionDirs` 列出你想监听哪些 agent 的回复。查看你的 agent：
+`agentSessionDirs` 列出你想监听哪些 agent 的回复。
 
+查看你的 agent 有哪些：
 ```powershell
 dir ~/.openclaw/agents/*/sessions/
 ```
-
-### 查看可用语音
-
-```powershell
-python edge_speak.py --list-voices
-```
-
-常用中文语音：
-
-| 语音 | 风格 |
-|------|------|
-| `zh-CN-XiaoyiNeural` | 活泼轻快 **推荐** |
-| `zh-CN-XiaoxiaoNeural` | 温暖标准 |
-| `zh-CN-YunxiNeural` | 阳光男声 |
-| `zh-CN-XiaochenNeural` | 冷静知性 |
-| `zh-CN-liaoning-XiaobeiNeural` | 幽默东北话 |
-| `zh-CN-shaanxi-XiaoniNeural` | 明亮陕西话 |
 
 ### 第四步：配置 Agent
 
@@ -109,6 +77,25 @@ python edge_speak.py --list-voices
 
 ---
 
+## 查看可用语音
+
+```powershell
+python edge_speak.py --list-voices
+```
+
+常用中文语音：
+
+| 语音 | 风格 |
+|------|------|
+| `zh-CN-XiaoyiNeural` | 活泼轻快 **推荐** |
+| `zh-CN-XiaoxiaoNeural` | 温暖标准 |
+| `zh-CN-YunxiNeural` | 阳光男声 |
+| `zh-CN-XiaochenNeural` | 冷静知性 |
+| `zh-CN-liaoning-XiaobeiNeural` | 幽默东北话 |
+| `zh-CN-shaanxi-XiaoniNeural` | 明亮陕西话 |
+
+---
+
 ## 相关命令
 
 **查看监听器运行状态：**
@@ -118,18 +105,13 @@ Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.Comm
 
 **手动启动：**
 ```powershell
-cd ~/.openclaw/tools/claw-speak
+cd <claw-speak 安装目录>
 node tts_watcher.js
 ```
 
-**手动停止（根据上一步查到的 PID）：**
+**手动停止：**
 ```powershell
 Stop-Process -Id <PID> -Force
-```
-
-**列出所有可用语音：**
-```powershell
-python edge_speak.py --list-voices
 ```
 
 ---
@@ -138,11 +120,11 @@ python edge_speak.py --list-voices
 
 ```
 claw-speak/
-├── README.md            ← 本文件
-├── install.ps1          ← 一键安装脚本
-├── config.example.json  ← 配置模板
-├── config.json          ← 实际配置
-├── tts_watcher.js       ← 轮询监听器
-├── edge_speak.py        ← Edge-TTS 封装
-└── assets/              ← 资源文件
+├── SKILL.md            ← 技能定义
+├── README.md           ← 本文件
+├── install.ps1         ← 安装脚本
+├── config.json         ← 配置
+├── config.example.json ← 配置模板
+├── tts_watcher.js      ← 轮询监听器
+└── edge_speak.py       ← Edge-TTS 封装
 ```
