@@ -3,7 +3,9 @@
   "voice": "zh-CN-XiaoyiNeural",
   "pollIntervalMs": 6000,
   "agentSessionDirs": [
-    "~/.openclaw/agents/main/sessions"
+    "~/.openclaw/agents/writer/sessions",
+    "~/.openclaw/agents/main/sessions",
+    "~/.openclaw/agents/shiori/sessions"
   ],
   "proxy": "http://127.0.0.1:7890",
   "verbose": true
