@@ -9,10 +9,21 @@
 ### 第一步：获取文件
 
 ```powershell
-git clone <仓库地址> ~/.openclaw/tools/claw-speak/
+git clone https://github.com/GarmandoSHAO/Claw-Speak.git ~/.openclaw/tools/claw-speak/
 ```
 
-### 第二步：检查依赖
+### 第二步：安装（二选一）
+
+**快捷方式 —— 运行安装脚本：**
+```powershell
+cd ~/.openclaw/tools/claw-speak
+.\install.ps1
+```
+安装脚本会自动完成以下操作：检查 Python 环境 → 安装依赖包 → 创建配置文件 → 验证 TTS 引擎能否正常工作（会直接读一句 "安装成功" 验证）。
+
+**手动安装：**
+
+检查依赖：
 
 | 依赖 | 最低版本 | 用途 |
 |------|---------|------|
@@ -24,13 +35,13 @@ node --version
 python --version
 ```
 
-### 第三步：安装 Python 包
+安装 Python 包：
 
 ```powershell
 pip install edge-tts soundfile numpy
 ```
 
-### 第四步：修改配置
+### 第三步：修改配置
 
 打开 `config.json`，填写实际信息。
 
@@ -47,9 +58,8 @@ pip install edge-tts soundfile numpy
 }
 ```
 
-`agentSessionDirs` 列出你想监听哪些 agent 的回复。
+`agentSessionDirs` 列出你想监听哪些 agent 的回复。查看你的 agent：
 
-查看你的 agent 有哪些：
 ```powershell
 dir ~/.openclaw/agents/*/sessions/
 ```
@@ -71,7 +81,7 @@ python edge_speak.py --list-voices
 | `zh-CN-liaoning-XiaobeiNeural` | 幽默东北话 |
 | `zh-CN-shaanxi-XiaoniNeural` | 明亮陕西话 |
 
-### 第五步：配置 Agent
+### 第四步：配置 Agent
 
 在你的 Agent 的 `SOUL.md` 中添加以下指令：
 
@@ -81,7 +91,7 @@ python edge_speak.py --list-voices
 如未运行，用 Start-Process -WindowStyle Hidden 启动 tts_watcher.js。
 ```
 
-### 第六步：验证
+### 第五步：验证
 
 给你的 agent 发一条消息。回复后几秒内应听到扬声器出声。
 
@@ -95,25 +105,31 @@ python edge_speak.py --list-voices
 | **多 Agent** | 一个监听器同时监听多个 agent |
 | **纯内存处理** | 音频全程在内存中转换，不写磁盘 |
 | **直连微软 TTS** | 不需要梯子 |
-| **零窗口干扰** | 纯命令行后台运行 |
+| **零窗口干扰** | 纯命令行后台运行，不弹窗口 |
 
 ---
 
 ## 相关命令
 
-**查看是否在运行：**
+**查看监听器运行状态：**
 ```powershell
 Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.CommandLine -like "*tts_watcher*" } | Select-Object ProcessId,CommandLine
 ```
 
 **手动启动：**
 ```powershell
+cd ~/.openclaw/tools/claw-speak
 node tts_watcher.js
 ```
 
-**手动停止：**
+**手动停止（根据上一步查到的 PID）：**
 ```powershell
-Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.CommandLine -like "*tts_watcher*" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+Stop-Process -Id <PID> -Force
+```
+
+**列出所有可用语音：**
+```powershell
+python edge_speak.py --list-voices
 ```
 
 ---
@@ -123,8 +139,10 @@ Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.Comm
 ```
 claw-speak/
 ├── README.md            ← 本文件
+├── install.ps1          ← 一键安装脚本
 ├── config.example.json  ← 配置模板
 ├── config.json          ← 实际配置
 ├── tts_watcher.js       ← 轮询监听器
 ├── edge_speak.py        ← Edge-TTS 封装
-└── install.ps1          ← 安装脚本
+└── assets/              ← 资源文件
+```
