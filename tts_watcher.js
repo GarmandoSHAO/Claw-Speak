@@ -130,15 +130,16 @@ function getLastAssistantReply(filePath) {
 
 // ─── 文本清理 ──────────────────────────────────────────
 
-/** 清理 Markdown 标记，提取纯文本给 TTS 朗读 */
+/** 清理 Markdown 标记，尽可能保留内容给 TTS 朗读 */
 function stripMarkdown(text) {
   return text
-    .replace(/```[\s\S]*?```/g, "")
-    .replace(/`[^`]+`/g, "")
-    .replace(/^#+\s*/gm, "")
-    .replace(/\*\*/g, "")
+    // 代码块：去掉反引号外壳，保留内部内容
+    .replace(/```[\s\S]*?```/g, (m) => m.replace(/```/g, "").trim())
+    // 行内代码：去掉反引号，保留内容
+    .replace(/`([^`]+)`/g, "$1")
+    // 链接：保留显示文字，去掉 URL
     .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-    .replace(/^-{3,}/gm, "")
+    // 合并多余空行
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }

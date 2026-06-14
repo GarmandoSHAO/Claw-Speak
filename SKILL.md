@@ -1,7 +1,7 @@
 ---
 name: claw-speak
-description: |
-  AI 回复后自动朗读。检测 tts_watcher 进程，未运行则启动，外部监听器自动朗读新回复。
+description: Auto-speak AI replies aloud via Microsoft Edge-TTS
+homepage: https://github.com/GarmandoSHAO/Claw-Speak
 ---
 
 # claw-speak
