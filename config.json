@@ -1,7 +1,7 @@
 {
   "python": "D:\\SCE\\App\\Anaconda\\envs\\py312\\python.exe",
   "voice": "zh-CN-XiaoyiNeural",
-  "pollIntervalMs": 6000,
+  "pollIntervalMs": 3000,
   "agentSessionDirs": [
     "~/.openclaw/agents/writer/sessions",
     "~/.openclaw/agents/main/sessions",

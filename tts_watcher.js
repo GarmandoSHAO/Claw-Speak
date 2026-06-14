@@ -3,6 +3,7 @@
  * TTS 自动朗读监听器
  *
  * 监听 OpenClaw agent session 文件，有新 assistant 回复时自动调用 TTS 朗读。
+ * 支持抢占式中断：新消息到达时自动中断当前朗读，立即朗读新内容。
  *
  * 启动：node tts_watcher.js
  * 停止：Ctrl+C
@@ -12,12 +13,10 @@
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
 
-const execFileAsync = promisify(execFile);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ─── 默认配置 ──────────────────────────────────────────
@@ -54,6 +53,7 @@ loadConfig();
 
 const TTS_SCRIPT = join(__dirname, "edge_speak.py");
 let lastAssistantText = "";
+let currentTtsProcess = null;
 
 // ─── Session 文件查找 ───────────────────────────────────
 
@@ -143,20 +143,23 @@ function stripMarkdown(text) {
 
 // ─── 核心轮询 ──────────────────────────────────────────
 
-async function checkForNewReply() {
+function checkForNewReply() {
   const file = findLatestJsonl();
   if (!file) return;
 
   const reply = getLastAssistantReply(file);
   if (!reply) return;
 
+  // 与上次相同 → 跳过
   if (reply === lastAssistantText) return;
 
+  // 首次启动：只记录基线，不朗读历史内容
   if (!lastAssistantText) {
     lastAssistantText = reply;
     return;
   }
 
+  // 立即更新追踪标记，防止重复处理
   lastAssistantText = reply;
 
   const cleanText = stripMarkdown(reply);
@@ -165,28 +168,57 @@ async function checkForNewReply() {
     return;
   }
 
+  // ── 抢占式中断：如果有正在朗读的进程，杀掉它 ──
+  if (currentTtsProcess) {
+    if (CONFIG.verbose) console.log("[tts-watcher] 新消息到达，中断当前朗读");
+    currentTtsProcess.kill();
+    currentTtsProcess = null;
+  }
+
   if (CONFIG.verbose) {
     console.log(`[tts-watcher] 新回复 (${reply.length} 字)：${cleanText.slice(0, 60)}...`);
   }
 
-  try {
-    await execFileAsync(CONFIG.python, [
-      TTS_SCRIPT,
-      "--text",
-      cleanText,
-      "--voice",
-      CONFIG.voice,
-    ]);
-    if (CONFIG.verbose) console.log("[tts-watcher] 朗读完成");
-  } catch (err) {
-    console.error("[tts-watcher] 朗读失败:", err.message);
-  }
+  // ── 非阻塞启动新 TTS 进程 ──
+  const child = execFile(CONFIG.python, [
+    TTS_SCRIPT,
+    "--text",
+    cleanText,
+    "--voice",
+    CONFIG.voice,
+  ]);
+
+  child.on("exit", (code) => {
+    // 只清理当前进程引用（防止并发进程互相影响）
+    if (currentTtsProcess === child) {
+      currentTtsProcess = null;
+    }
+    if (CONFIG.verbose) {
+      const msg = code === null
+        ? "[tts-watcher] 朗读被中断"
+        : `[tts-watcher] 朗读完成 (exit=${code})`;
+      console.log(msg);
+    }
+  });
+
+  child.on("error", (err) => {
+    // 被 kill 的进程会触发 error，忽略
+    if (!err.message.includes("killed") && !err.message.includes("SIGTERM")) {
+      console.error("[tts-watcher] 朗读错误:", err.message);
+    }
+    if (currentTtsProcess === child) {
+      currentTtsProcess = null;
+    }
+  });
+
+  currentTtsProcess = child;
 }
 
 // ─── 启动 ──────────────────────────────────────────────
 
 console.log("═══════════════════════════════════════════");
-console.log("  claw-speak - TTS 自动朗读监听器");
+console.log("  claw-speak - TTS 自动朗读监听器 v3");
+console.log("  支持抢占式中断：新消息自动打断当前朗读");
 console.log(`  监听目录: ${CONFIG.agentSessionDirs.join(", ")}`);
 console.log(`  轮询间隔: ${CONFIG.pollIntervalMs}ms`);
 console.log(`  语音: ${CONFIG.voice}`);
